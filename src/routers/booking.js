@@ -1,22 +1,20 @@
 const express = require('express');
 const route = express.Router();
 const ctrl = require('../controllers/booking');
+const authCheck = require('../middleware/authCheck');
 
 // Getting all booking data
-route.get("/", ctrl.getData);
+route.get("/", authCheck, ctrl.getData);
 
 // Adding a booking data
-route.post("/add", ctrl.saveData);
-// route.post("/add", () => {
-//     console.log("Success");
-// });
+route.post("/add", authCheck, ctrl.saveData);
 
 //Updating a booking data
-route.put("/:id", ctrl.updateData);
+route.put("/:id", authCheck, ctrl.updateData);
 
 ///////////////////////////////////////////DANGER///////////////////////////////////////
 // Deleting a single booking by id
-route.delete("/:id", ctrl.deleteDataById);
+route.delete("/:id", authCheck, ctrl.deleteDataById);
 
 
 

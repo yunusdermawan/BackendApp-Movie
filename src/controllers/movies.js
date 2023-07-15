@@ -1,5 +1,6 @@
 const ctrl = {};
 const model = require('../models/movies');
+const upload = require('../utils/upload')
 
 // Getting all movies
 ctrl.getData = async (req, res) => {
@@ -12,11 +13,27 @@ ctrl.getData = async (req, res) => {
     }
 };
 
+// Getting data with pagination
+ctrl.getPaginatedData = async (req, res) => {
+    try {
+        const params = {
+            page: req.query.page || 1,
+            limit: req.query.limit || 5
+        }
+        //console.log(params);
+        const result = await model.getPaginatedMovies(params);
+        //return res.status(200).json(result);
+        return res.status(200).json(result);
+    } catch(error) {
+        res.status(400).json('Error : ' + error);
+    }
+};
+
 // Getting all movies and sort based on movie_name or release_date
 ctrl.getAndSort = async (req, res) => {
     try {
-        const sortBy = parseInt(req.params.sort);
-        console.log(sortBy);
+        const { sortBy } = req.query;
+        //console.log(sortBy);
         const result = await model.getAndSort(sortBy);
         //return res.status(200).json(result);
         return res.status(200).json(result);
@@ -54,13 +71,20 @@ ctrl.getDataById = async (req, res) => {
 // Adding a data
 ctrl.saveData = async (req, res) => {
     try {
+        //console.log(req.file);
+        if (req.file !== undefined) {
+            req.body.banner = await upload(req.file.path)
+        }
+
+        
         const {
             movie_name,
             director,
             release_date,
             category,
             casts,
-            duration
+            duration,
+            banner
         } = req.body;
         //const data = req.body;
         //return console.log(movie_name);
@@ -72,6 +96,7 @@ ctrl.saveData = async (req, res) => {
             category,
             casts,
             duration,
+            banner
         });
         //return res.status(200).json(result);
         const created = '1 movie added';
@@ -92,7 +117,8 @@ ctrl.updateData = async (req, res) => {
             release_date,
             category,
             casts,
-            duration
+            duration,
+            banner
         } = req.body;
         // const upd = req.body;
         //return console.log(typeof(release_date));
@@ -103,6 +129,7 @@ ctrl.updateData = async (req, res) => {
             category,
             casts,
             duration,
+            banner,
             movie_id
         });
         //return res.status(200).json(result);

@@ -4,7 +4,7 @@ const model = require('../models/schedule');
 // Getting all schedules
 ctrl.getData = async (req, res) => {
     try {
-        const result = await model.getAllSchedules();
+        const result = await model.getAllSchedules(req.user);
         //return res.status(200).json(result);
         return res.status(200).json(result);
     } catch(error) {
@@ -76,7 +76,7 @@ ctrl.deleteDataById = async (req, res) => {
     try {
         const schedule_id = parseInt(req.params.id);
         //console.log(schedule_id);
-        const result = await model.deleteSchedule(schedule_id);
+        const result = await model.deleteSchedule(req.user);
         //return res.status(200).json(result);
         const deleted = '1 schedule deleted';
         return res.status(200).json(deleted);

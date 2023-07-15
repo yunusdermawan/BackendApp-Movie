@@ -1,33 +1,36 @@
 const express = require('express');
 const route = express.Router();
 const ctrl = require('../controllers/movies');
+const authCheck = require('../middleware/authCheck');
+const upload = require('../middleware/upload');
 
 // Getting all movies
+// route.get("/", authCheck, ctrl.getData);
 route.get("/", ctrl.getData);
 
 // Getting all movies by movie_name
 route.get("/name", ctrl.getDataByName);
-// route.get("/name", () => {
-//     console.log('Success');
-// });
 
-// Getting a single movie by movie_id
-route.get("/:id", ctrl.getDataById);
+// Getting data with pagination
+route.get("/items", ctrl.getPaginatedData);
 
 // Getting all movies and sort
-//route.get("/sort:sort", ctrl.getAndSort);
-route.get("/sorted", () => {
-    console.log('Success');
-});
+route.get("/sort", ctrl.getAndSort);
 
-// Adding a product
-route.post("/add", ctrl.saveData);
 
-//Updating a product
+
+// Getting a single movie by movie_id
+route.get("/:something", ctrl.getDataById);
+
+// Adding a movie => 
+// route.post("/add", authCheck, upload.single('image'), ctrl.saveData);
+route.post("/add", upload.single('image'), ctrl.saveData);
+
+//Updating a movie
 route.put("/:id", ctrl.updateData);
 
 ///////////////////////////////////////////DANGER///////////////////////////////////////
-// Getting a single product ny id
+// Deleting a single movie by id
 route.delete("/:id", ctrl.deleteDataById);
 
 
